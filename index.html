@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Pokemon HeartGold Soul Link Nuzlocke Tracker</title>
+		<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+		<style>
+			:root {
+				--gold-main: #e6ab08;
+				--gold-dark: #8c6000;
+				--silver-main: #4a8ec2;
+				--silver-dark: #1e3d59;
+				--bg-dark: #121820;
+				--card-bg: #1e2836;
+				--card-border: #3a4b63;
+				--text-light: #f0f4f8;
+				--text-yellow: #ffde00;
+				--p1-color: #ff5959;
+				--p2-color: #599bff;
+			}
+
+			* { box-sizing: border-box; margin: 0; padding: 0; }
+
+			body {
+			    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			    background: var(--bg-dark);
+			    background-image: 
+			        radial-gradient(circle at 50% 20%, #1d2b3a 0%, var(--bg-dark) 80%),
+			        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+			        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+			    background-size: 100% 100%, 20px 20px, 20px 20px;
+			    min-height: 100vh;
+			    padding: 15px 10px;
+			    color: var(--text-light);
+			    font-size: 12px;
+			}
+
+			h1 { 
+			    text-align: center; 
+			    font-family: 'Press Start 2P', monospace;
+			    color: var(--text-yellow); 
+			    margin: 12px 0 20px 0; 
+			    font-size: 16px; 
+			    line-height: 1.5;
+			    text-shadow: 3px 3px 0px #b38f00, 5px 5px 0px #000;
+			    letter-spacing: -0.5px;
+			}
+
+			.tally-section {
+			    background: var(--card-bg);
+			    border: 3px solid var(--card-border);
+			    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.4);
+			    border-radius: 10px;
+			    padding: 15px;
+			    margin-bottom: 15px;
+			    display: flex;
+			    justify-content: center;
+			    gap: 20px;
+			    flex-wrap: wrap;
+			}
+
+			.tally-player { 
+			    text-align: center; 
+			    background: rgba(0,0,0,0.25);
+			    padding: 12px 18px;
+			    border-radius: 8px;
+			    border: 2px solid rgba(255,255,255,0.05);
+			}
+
+			.tally-player:nth-child(1) h3 { color: var(--p1-color); text-shadow: 0 0 8px rgba(255,89,89,0.4); }
+			.tally-player:nth-child(2) h3 { color: var(--p2-color); text-shadow: 0 0 8px rgba(89,155,255,0.4); }
+			.tally-player:nth-child(3) h3 { color: var(--text-yellow); text-shadow: 0 0 8px rgba(255,222,0,0.4); }
+
+			.tally-player h3 { font-family: 'Press Start 2P', monospace; font-size: 11px; margin-bottom: 12px; }
+
+			.tally-row {
+			    display: flex;
+			    align-items: center;
+			    gap: 12px;
+			    margin: 6px 0;
+			    background: rgba(10, 15, 22, 0.6);
+			    padding: 6px 16px;
+			    border-radius: 20px;
+			    border: 1px solid rgba(255,255,255,0.1);
+			}
+
+			.tally-label { min-width: 60px; color: #a0b0c0; font-weight: 600; text-align: left; }
+			.tally-count { min-width: 35px; text-align: center; font-family: 'Press Start 2P', monospace; font-size: 16px; color: var(--text-yellow); }
+
+			.tally-btn {
+			    width: 28px; height: 28px; border: none; border-radius: 50%; cursor: pointer;
+			    font-family: 'Press Start 2P', monospace; font-size: 11px;
+			    background: linear-gradient(135deg, #4f5d73, #2d3748); color: #fff;
+			    box-shadow: 0 2px 4px rgba(0,0,0,0.4); transition: all 0.1s ease;
+			    display: flex; align-items: center; justify-content: center; line-height: 1;
+			    user-select: none;
+			}
+			.tally-btn:hover { transform: translateY(-1px); background: linear-gradient(135deg, #637591, #3a475c); }
+			.tally-btn:active { transform: translateY(1px); box-shadow: none; }
+
+			.filter-section {
+			    background: var(--card-bg); border: 2px solid var(--card-border);
+			    border-radius: 8px; padding: 8px; margin-bottom: 15px;
+			    display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+			}
+
+			.filter-btn {
+			    padding: 7px 16px; background: #141b24; border: 1px solid #3a4b63;
+			    border-radius: 20px; color: #8c9ba5; cursor: pointer;
+			    font-size: 11px; font-weight: 600; transition: all 0.2s;
+			}
+			.filter-btn:hover { background: #253346; color: #fff; }
+			.filter-btn.active { 
+			    background: linear-gradient(135deg, var(--gold-main), var(--gold-dark)); 
+			    color: #000; font-weight: bold; border-color: #ffe066; box-shadow: 0 0 8px rgba(230, 171, 8, 0.4);
+			}
+
+			.overview-table-wrapper { 
+			    overflow-x: auto; margin-bottom: 15px; border-radius: 8px;
+			    border: 2px solid var(--card-border); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+			}
+
+			.overview-table { width: 100%; border-collapse: collapse; min-width: 500px; background: var(--card-bg); }
+			.overview-table th {
+			    background: linear-gradient(180deg, #2c3b4e 0%, #1c2736 100%);
+			    color: var(--text-yellow); font-family: 'Press Start 2P', monospace;
+			    font-size: 9px; padding: 10px 6px; text-align: center; border-bottom: 2px solid var(--card-border);
+			}
+			.overview-table th:first-child { width: 50px; }
+			.overview-table td { padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; }
+			.overview-table td:first-child { color: #5c6e82; font-family: 'Press Start 2P', monospace; font-size: 10px; }
+			.overview-table tr:hover { background: rgba(255,255,255,0.03); }
+
+			.overview-pokemon {
+			    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+			    padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;
+			    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
+			}
+			.overview-pokemon img { width: 28px; height: 28px; image-rendering: pixelated; }
+			.overview-pokemon.empty { color: #526375; font-style: italic; background: transparent; border: none; }
+			.overview-pokemon.dead { background: rgba(60, 20, 20, 0.6); border-color: #8b0000; text-decoration: line-through; color: #e57373; opacity: 0.7; }
+
+			.view-toggle { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+			.toggle-btn {
+			    padding: 8px 16px; background: #141b24; border: 1px solid #3a4b63;
+			    border-radius: 6px; color: #8c9ba5; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s;
+			}
+			.toggle-btn:hover { background: #253346; color: #fff; }
+			.toggle-btn.active { 
+			    background: linear-gradient(135deg, var(--silver-main), var(--silver-dark)); 
+			    color: #fff; border-color: #82b3dc; box-shadow: 0 0 8px rgba(74, 142, 194, 0.4);
+			}
+
+			.reset-btn {
+			    padding: 8px 16px; background: linear-gradient(135deg, #c62828, #8e0000);
+			    border: 1px solid #ff5252; border-radius: 6px; color: #fff; font-weight: bold; font-size: 11px;
+			    cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+			}
+			.reset-btn:hover { background: linear-gradient(135deg, #d32f2f, #c62828); transform: translateY(-1px); box-shadow: 0 0 8px rgba(255, 82, 82, 0.5); }
+
+			.container { max-width: 100%; overflow-x: auto; border-radius: 8px; border: 2px solid var(--card-border); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+			table { width: 100%; border-collapse: collapse; background: var(--card-bg); table-layout: fixed; }
+			th {
+			    background: linear-gradient(180deg, #2c3b4e 0%, #1c2736 100%); color: var(--text-yellow);
+			    font-family: 'Press Start 2P', monospace; padding: 10px 6px; text-align: center;
+			    font-weight: normal; font-size: 9px; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid var(--card-border);
+			}
+			th:nth-child(1) { width: 25%; text-align: left; padding-left: 12px; }
+			th:nth-child(2) { width: 30%; }
+			th:nth-child(3) { width: 30%; }
+			th:nth-child(4) { width: 7.5%; }
+			th:nth-child(5) { width: 7.5%; }
+
+			td { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; text-align: center; font-size: 11px; }
+			td:first-child { text-align: left; padding-left: 12px; font-weight: 600; color: #d0dce5; word-break: break-word; }
+			tr:hover { background: rgba(255,255,255,0.02); }
+
+			tr.section-header { background: linear-gradient(90deg, #8c6000 0%, #e6ab08 50%, #8c6000 100%); }
+			tr.section-header td { text-align: center; color: #000; font-family: 'Press Start 2P', monospace; font-weight: bold; padding: 8px; font-size: 11px; text-shadow: 0 1px 0 rgba(255,255,255,0.4); }
+			tr.category-header td { text-align: center; color: #9ab0c7; background: #141c26; padding: 6px; font-size: 10px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; border-top: 1px solid #2d3b4e; border-bottom: 1px solid #2d3b4e; }
+
+			.pokemon-select-wrapper { position: relative; }
+			.selected-pokemon {
+			    display: flex; align-items: center; justify-content: center; padding: 4px;
+			    background: #121820; border: 1px solid #3a4b63; border-radius: 6px; min-height: 32px;
+			    cursor: pointer; transition: all 0.2s; gap: 6px; font-size: 11px;
+			}
+			.selected-pokemon:hover { background: #1c2633; border-color: var(--silver-main); }
+			.selected-pokemon img { width: 24px; height: 24px; image-rendering: pixelated; }
+			.selected-pokemon span { font-weight: 600; }
+			.selected-pokemon .clear-btn { color: #788a9c; font-size: 14px; cursor: pointer; font-weight: bold; margin-left: 2px; }
+			.selected-pokemon .clear-btn:hover { color: #ff5959; }
+			.no-pokemon { color: #4a5a6a; font-style: italic; font-size: 11px !important; }
+
+			.pokemon-search {
+			    width: 100%; padding: 5px 8px; border: 1px solid var(--silver-main); border-radius: 4px;
+			    background: #0d131a; color: #fff; font-size: 11px; margin-top: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+			}
+			.pokemon-search:focus { outline: none; border-color: var(--text-yellow); }
+
+			.pokemon-dropdown {
+			    position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto;
+			    background: #141c26; border: 2px solid var(--silver-main); border-top: none;
+			    border-radius: 0 0 6px 6px; z-index: 100; display: none; font-size: 11px; box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+			}
+			.pokemon-dropdown.active { display: block; }
+			.pokemon-option { display: flex; align-items: center; padding: 4px 8px; cursor: pointer; transition: background 0.1s; gap: 6px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+			.pokemon-option:hover { background: var(--silver-dark); color: var(--text-yellow); }
+			.pokemon-option.hidden { display: none; }
+			.pokemon-option img { width: 24px; height: 24px; image-rendering: pixelated; flex-shrink: 0; }
+			.pokemon-option .pokemon-name { flex: 1; text-align: left; }
+			.pokemon-option .pokemon-id { color: #5c6e82; font-family: 'Press Start 2P', monospace; font-size: 8px; flex-shrink: 0; }
+
+			.checkbox-wrapper { display: flex; justify-content: center; }
+			.custom-checkbox { position: relative; width: 24px; height: 24px; cursor: pointer; display: block; }
+			.custom-checkbox input { opacity: 0; width: 100%; height: 100%; cursor: pointer; position: absolute; z-index: 2; margin: 0; }
+			.custom-checkbox .checkmark {
+			    position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #253346;
+			    border: 2px solid #3a4b63; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1; transition: all 0.2s;
+			}
+			.custom-checkbox input:checked + .checkmark {
+			    background: linear-gradient(180deg, #ff1111 0%, #ff1111 45%, #222 45%, #222 55%, #ffffff 55%, #ffffff 100%);
+			    border-color: #000; box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+			}
+			.custom-checkbox input:checked + .checkmark::after { content: ''; width: 6px; height: 6px; background: #fff; border: 2px solid #000; border-radius: 50%; }
+			.custom-checkbox.dead input:checked + .checkmark {
+			    background: linear-gradient(180deg, #404040 0%, #404040 45%, #000 45%, #000 55%, #1a1a1a 55%, #1a1a1a 100%);
+			    border-color: #ff3333; box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+			}
+			.custom-checkbox.dead input:checked + .checkmark::after { content: '✕'; color: #ff3333; font-weight: bold; font-size: 10px; background: transparent; border: none; width: auto; height: auto; }
+
+			.action-buttons-container { display: flex; justify-content: center; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+			.add-btn {
+			    padding: 10px 20px; background: linear-gradient(135deg, #2e7d32, #1b5e20);
+			    border: 2px solid #4caf50; border-radius: 6px; color: #fff; font-family: 'Press Start 2P', monospace;
+			    font-size: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+			}
+			.add-btn:hover { background: linear-gradient(135deg, #388e3c, #2e7d32); transform: translateY(-1px); box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+
+			.clear-resets-btn {
+			    padding: 10px 20px; background: linear-gradient(135deg, #e65100, #b23c00);
+			    border: 2px solid #ff9800; border-radius: 6px; color: #fff; font-family: 'Press Start 2P', monospace;
+			    font-size: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+			}
+			.clear-resets-btn:hover { background: linear-gradient(135deg, #f57c00, #e65100); transform: translateY(-1px); box-shadow: 0 0 10px rgba(255, 152, 0, 0.5); }
+
+			.modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+			.modal-backdrop.active { display: flex; }
+			.modal-content { background: var(--card-bg); border: 3px solid var(--card-border); border-radius: 10px; padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
+			.modal-content h3 { font-family: 'Press Start 2P', monospace; color: var(--text-yellow); font-size: 11px; margin-bottom: 15px; text-align: center; }
+			.modal-group { margin-bottom: 12px; text-align: left; }
+			.modal-group label { display: block; font-size: 11px; color: #a0b0c0; margin-bottom: 4px; font-weight: 600; }
+			.modal-group input, .modal-group select { width: 100%; padding: 8px; background: #121820; border: 1px solid var(--silver-main); border-radius: 4px; color: #fff; font-size: 11px; }
+			.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+			.modal-btn { padding: 7px 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; }
+			.modal-btn.cancel { background: #4a5a6a; color: #fff; }
+			.modal-btn.save { background: var(--gold-main); color: #000; }
+
+			.scroll-hint { text-align: center; color: #5c6e82; font-size: 10px; padding: 8px; font-family: 'Press Start 2P', monospace; }
+
+			@media (max-width: 768px) {
+			    body { padding: 5px; }
+			    h1 { font-size: 13px; }
+			    .tally-section { gap: 10px; padding: 10px; }
+			    .selected-pokemon img, .pokemon-option img { width: 20px; height: 20px; }
+			    th:nth-child(1) { width: 30%; }
+			    th:nth-child(2), th:nth-child(3) { width: 25%; }
+			    th:nth-child(4), th:nth-child(5) { width: 10%; }
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Pokemon HeartGold Soul Link Nuzlocke Tracker</h1>
+
+		<div class="tally-section">
+			<div class="tally-player">
+				<h3>Spieler 1</h3>
+				<div class="tally-row">
+					<span class="tally-label">Strich</span>
+					<button class="tally-btn" onclick="changeTally('p1', -1)">−</button>
+					<span class="tally-count" id="tally-p1">0</span>
+					<button class="tally-btn" onclick="changeTally('p1', 1)">+</button>
+				</div>
+			</div>
+			<div class="tally-player">
+				<h3>Spieler 2</h3>
+				<div class="tally-row">
+					<span class="tally-label">Strich</span>
+					<button class="tally-btn" onclick="changeTally('p2', -1)">−</button>
+					<span class="tally-count" id="tally-p2">0</span>
+					<button class="tally-btn" onclick="changeTally('p2', 1)">+</button>
+				</div>
+			</div>
+			<div class="tally-player">
+				<h3>Resets</h3>
+				<div class="tally-row">
+					<span class="tally-label">Anzahl</span>
+					<span class="tally-count" id="tally-resets">0</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="filter-section">
+			<button class="filter-btn active" onclick="setFilter('all')">Alle</button>
+			<button class="filter-btn" onclick="setFilter('available')">Verfügbar</button>
+			<button class="filter-btn" onclick="setFilter('unavailable')">Nicht verfügbar</button>
+		</div>
+
+		<div class="overview-table-wrapper">
+			<table class="overview-table" id="overviewTable">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Spieler 1</th>
+						<th>Spieler 2</th>
+						<th>Ort</th>
+					</tr>
+				</thead>
+				<tbody id="overviewBody"></tbody>
+			</table>
+		</div>
+
+		<div class="view-toggle">
+			<button class="toggle-btn active" onclick="showTable()">Detail-Tabelle</button>
+			<button class="toggle-btn" onclick="hideTable()">Nur Übersicht</button>
+			<button class="reset-btn" onclick="confirmReset()">Reset</button>
+		</div>
+
+		<div id="tableContainer">
+			<p class="scroll-hint">↓ Scrolle nach unten für alle Routen und Gebiete ↓</p>
+			<div class="container">
+				<table id="trackerTable">
+					<thead>
+						<tr>
+							<th>Ort</th>
+							<th>Spieler 1</th>
+							<th>Spieler 2</th>
+							<th>Gef.</th>
+							<th>Tot</th>
+						</tr>
+					</thead>
+					<tbody id="tableBody"></tbody>
+				</table>
+			</div>
+
+			<div class="action-buttons-container">
+				<button class="add-btn" onclick="openAddModal()">+ Ort hinzufügen</button>
+				<button class="clear-resets-btn" onclick="resetResetsCounter()">Resets auf 0 setzen</button>
+			</div>
+		</div>
+
+		<div class="modal-backdrop" id="addModal">
+			<div class="modal-content">
+				<h3>Neuen Ort hinzufügen</h3>
+				<div class="modal-group">
+					<label>Region</label>
+					<select id="newRegion">
+						<option value="Johto">Johto</option>
+						<option value="Kanto">Kanto</option>
+						<option value="Spezial">Spezial / Zusatz</option>
+					</select>
+				</div>
+				<div class="modal-group">
+					<label>Kategorie</label>
+					<input type="text" id="newCategory" placeholder="z. B. Routen, Gebäude..." value="Zusatzgebiete">
+				</div>
+				<div class="modal-group">
+					<label>Name des Orts</label>
+					<input type="text" id="newPlaceName" placeholder="z. B. Geheimer Garten">
+				</div>
+				<div class="modal-actions">
+					<button class="modal-btn cancel" onclick="closeAddModal()">Abbrechen</button>
+					<button class="modal-btn save" onclick="saveNewLocation()">Hinzufügen</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Firebase SDKs -->
+		<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+		<script>
+			const firebaseConfig = {
+			  apiKey: "AIzaSyA-HErIDKJxHnVcN9InLjqSdTQ_2z1KiAs",
+			  authDomain: "nuzlocke-soullink.firebaseapp.com",
+			  databaseURL: "https://nuzlocke-soullink-default-rtdb.europe-west1.firebasedatabase.app",
+			  projectId: "nuzlocke-soullink",
+			  storageBucket: "nuzlocke-soullink.firebasestorage.app",
+			  messagingSenderId: "567761765615",
+			  appId: "1:567761765615:web:bb85be4691685ff62ec71a"
+			};
+
+			firebase.initializeApp(firebaseConfig);
+			const db = firebase.database();
+			const trackerRef = db.ref('tracker_data');
+
+			const POKEMON_DATA = [
+			    {id:1,name:"Bisasam"},{id:2,name:"Bisaknosp"},{id:3,name:"Bisaflor"},
+			    {id:4,name:"Glumanda"},{id:5,name:"Glutexo"},{id:6,name:"Glurak"},
+			    {id:7,name:"Schiggy"},{id:8,name:"Schillok"},{id:9,name:"Turtok"},
+			    {id:10,name:"Raupy"},{id:11,name:"Safcon"},{id:12,name:"Smettbo"},
+			    {id:13,name:"Hornliu"},{id:14,name:"Kokuna"},{id:15,name:"Bibor"},
+			    {id:16,name:"Taubsi"},{id:17,name:"Tauboga"},{id:18,name:"Tauboss"},
+			    {id:19,name:"Rattfratz"},{id:20,name:"Rattikarl"},{id:21,name:"Habitak"},
+			    {id:22,name:"Ibitak"},{id:23,name:"Rettan"},{id:24,name:"Arbok"},
+			    {id:25,name:"Pikachu"},{id:26,name:"Raichu"},{id:27,name:"Sandan"},
+			    {id:28,name:"Sandamer"},{id:29,name:"Nidoran♀"},{id:30,name:"Nidorina"},
+			    {id:31,name:"Nidoqueen"},{id:32,name:"Nidoran♂"},{id:33,name:"Nidorino"},
+			    {id:34,name:"Nidoking"},{id:35,name:"Piepi"},{id:36,name:"Pixi"},
+			    {id:37,name:"Vulpix"},{id:38,name:"Vulnona"},{id:39,name:"Pummeluff"},
+			    {id:40,name:"Knuddeluff"},{id:41,name:"Zubat"},{id:42,name:"Golbat"},
+			    {id:43,name:"Myrapla"},{id:44,name:"Duflor"},{id:45,name:"Giflor"},
+			    {id:46,name:"Paras"},{id:47,name:"Parasek"},{id:48,name:"Bluzuk"},
+			    {id:49,name:"Omot"},{id:50,name:"Digda"},{id:51,name:"Digdri"},
+			    {id:52,name:"Mauzi"},{id:53,name:"Snobilikat"},{id:54,name:"Enton"},
+			    {id:55,name:"Entoron"},{id:56,name:"Menki"},{id:57,name:"Rasaff"},
+			    {id:58,name:"Fukano"},{id:59,name:"Arkani"},{id:60,name:"Quapsel"},
+			    {id:61,name:"Quaputzi"},{id:62,name:"Quappo"},{id:63,name:"Abra"},
+			    {id:64,name:"Kadabra"},{id:65,name:"Simsala"},{id:66,name:"Machollo"},
+			    {id:67,name:"Maschock"},{id:68,name:"Machomei"},{id:69,name:"Knofensa"},
+			    {id:70,name:"Ultrigaria"},{id:71,name:"Sarzenia"},{id:72,name:"Tentacha"},
+			    {id:73,name:"Tentoxa"},{id:74,name:"Kleinstein"},{id:75,name:"Georok"},
+			    {id:76,name:"Geowaz"},{id:77,name:"Ponita"},{id:78,name:"Gallopa"},
+			    {id:79,name:"Flegmon"},{id:80,name:"Lahmus"},{id:81,name:"Magnetilo"},
+			    {id:82,name:"Magneton"},{id:83,name:"Porenta"},{id:84,name:"Dodu"},
+			    {id:85,name:"Dodri"},{id:86,name:"Jurob"},{id:87,name:"Jugong"},
+			    {id:88,name:"Sleima"},{id:89,name:"Sleimok"},{id:90,name:"Muschas"},
+			    {id:91,name:"Austos"},{id:92,name:"Nebulak"},{id:93,name:"Alpollo"},
+			    {id:94,name:"Gengar"},{id:95,name:"Onix"},{id:96,name:"Traumato"},
+			    {id:97,name:"Hypno"},{id:98,name:"Krabby"},{id:99,name:"Kingler"},
+			    {id:100,name:"Voltobal"},{id:101,name:"Lektrobal"},{id:102,name:"Owei"},
+			    {id:103,name:"Kokowei"},{id:104,name:"Tragosso"},{id:105,name:"Knogga"},
+			    {id:106,name:"Kicklee"},{id:107,name:"Nockchan"},{id:108,name:"Schlurp"},
+			    {id:109,name:"Smogon"},{id:110,name:"Smogmog"},{id:111,name:"Rihorn"},
+			    {id:112,name:"Rizeros"},{id:113,name:"Chaneira"},{id:114,name:"Tangela"},
+			    {id:115,name:"Kangama"},{id:116,name:"Seeper"},{id:117,name:"Seemon"},
+			    {id:118,name:"Goldini"},{id:119,name:"Golking"},{id:120,name:"Sterndu"},
+			    {id:121,name:"Starmie"},{id:122,name:"Pantimos"},{id:123,name:"Sichlor"},
+			    {id:124,name:"Rossana"},{id:125,name:"Elektek"},{id:126,name:"Magmar"},
+			    {id:127,name:"Pinsir"},{id:128,name:"Tauros"},{id:129,name:"Karpador"},
+			    {id:130,name:"Garados"},{id:131,name:"Lapras"},{id:132,name:"Ditto"},
+			    {id:133,name:"Evoli"},{id:134,name:"Aquana"},{id:135,name:"Blitza"},
+			    {id:136,name:"Flamara"},{id:137,name:"Porygon"},{id:138,name:"Amonitas"},
+			    {id:139,name:"Amoroso"},{id:140,name:"Kabuto"},{id:141,name:"Kabutops"},
+			    {id:142,name:"Aerodactyl"},{id:143,name:"Relaxo"},{id:144,name:"Arktos"},
+			    {id:145,name:"Zapdos"},{id:146,name:"Lavados"},{id:147,name:"Dratini"},
+			    {id:148,name:"Dragonir"},{id:149,name:"Dragoran"},{id:150,name:"Mewtu"},
+			    {id:151,name:"Mew"},{id:152,name:"Endivie"},{id:153,name:"Lorblatt"},
+			    {id:154,name:"Meganie"},{id:155,name:"Feurigel"},{id:156,name:"Igelavar"},
+			    {id:157,name:"Tornupto"},{id:158,name:"Karnimani"},{id:159,name:"Tyracroc"},
+			    {id:160,name:"Impergator"},{id:161,name:"Wiesor"},{id:162,name:"Wiesenior"},
+			    {id:163,name:"Hoothoot"},{id:164,name:"Noctuh"},{id:165,name:"Ledyba"},
+			    {id:166,name:"Ledian"},{id:167,name:"Webarak"},{id:168,name:"Ariados"},
+			    {id:169,name:"Iksbat"},{id:170,name:"Lampi"},{id:171,name:"Lanturn"},
+			    {id:172,name:"Pichu"},{id:173,name:"Pii"},{id:174,name:"Fluffeluff"},
+			    {id:175,name:"Togepi"},{id:176,name:"Togetic"},{id:177,name:"Natu"},
+			    {id:178,name:"Xatu"},{id:179,name:"Voltilamm"},{id:180,name:"Waaty"},
+			    {id:181,name:"Ampharos"},{id:182,name:"Blubella"},{id:183,name:"Marill"},
+			    {id:184,name:"Azumarill"},{id:185,name:"Mogelbaum"},{id:186,name:"Quaxo"},
+			    {id:187,name:"Hoppspross"},{id:188,name:"Hubelupf"},{id:189,name:"Papungha"},
+			    {id:190,name:"Griffel"},{id:191,name:"Sonnkern"},{id:192,name:"Sonnflora"},
+			    {id:193,name:"Yanma"},{id:194,name:"Felino"},{id:195,name:"Morlord"},
+			    {id:196,name:"Psiana"},{id:197,name:"Nachtara"},{id:198,name:"Kramurx"},
+			    {id:199,name:"Laschoking"},{id:200,name:"Traunfugil"},{id:201,name:"Icognito"},
+			    {id:202,name:"Woingenau"},{id:203,name:"Girafarig"},{id:204,name:"Tannza"},
+			    {id:205,name:"Forstellka"},{id:206,name:"Dummisel"},{id:207,name:"Skorgla"},
+			    {id:208,name:"Stahlos"},{id:209,name:"Snubbull"},{id:210,name:"Granbull"},
+			    {id:211,name:"Baldorfish"},{id:212,name:"Scherox"},{id:213,name:"Pottrott"},
+			    {id:214,name:"Skaraborn"},{id:215,name:"Sniebel"},{id:216,name:"Teddiursa"},
+			    {id:217,name:"Ursaring"},{id:218,name:"Schneckmag"},{id:219,name:"Magcargo"},
+			    {id:220,name:"Quiekel"},{id:221,name:"Keifel"},{id:222,name:"Corasonn"},
+			    {id:223,name:"Remoraid"},{id:224,name:"Octillery"},{id:225,name:"Botogel"},
+			    {id:226,name:"Mantax"},{id:227,name:"Panzaeron"},{id:228,name:"Hunduster"},
+			    {id:229,name:"Hundemon"},{id:230,name:"Seedraking"},{id:231,name:"Phanpy"},
+			    {id:232,name:"Donphan"},{id:233,name:"Porygon2"},{id:234,name:"Damhirplex"},
+			    {id:235,name:"Farbeagle"},{id:236,name:"Rabauz"},{id:237,name:"Kapoera"},
+			    {id:238,name:"Kussilla"},{id:239,name:"Elekid"},{id:240,name:"Magby"},
+			    {id:241,name:"Miltank"},{id:242,name:"Heiteira"},{id:243,name:"Raikou"},
+			    {id:244,name:"Entei"},{id:245,name:"Suicune"},{id:246,name:"Larvitar"},
+			    {id:247,name:"Pupitar"},{id:248,name:"Despotar"},{id:249,name:"Lugia"},
+			    {id:250,name:"Ho-Oh"},{id:251,name:"Celebi"},{id:252,name:"Geckarbor"},
+			    {id:253,name:"Reptain"},{id:254,name:"Gewaldro"},{id:255,name:"Flemmli"},
+			    {id:256,name:"Jungglut"},{id:257,name:"Lohgock"},{id:258,name:"Hydropi"},
+			    {id:259,name:"Moorabbel"},{id:260,name:"Sumpex"},{id:261,name:"Fiffyen"},
+			    {id:262,name:"Magnayen"},{id:263,name:"Zigzachs"},{id:264,name:"Geradaks"},
+			    {id:265,name:"Waumpel"},{id:266,name:"Schaloko"},{id:267,name:"Papinella"},
+			    {id:268,name:"Panekon"},{id:269,name:"Pudox"},{id:270,name:"Loturzel"},
+			    {id:271,name:"Lombrero"},{id:272,name:"Kappalores"},{id:273,name:"Samurzel"},
+			    {id:274,name:"Blanas"},{id:275,name:"Tengulist"},{id:276,name:"Schwalbini"},
+			    {id:277,name:"Schwalboss"},{id:278,name:"Wingull"},{id:279,name:"Pelipper"},
+			    {id:280,name:"Trasla"},{id:281,name:"Kirlia"},{id:282,name:"Guardevoir"},
+			    {id:283,name:"Gehweiher"},{id:284,name:"Maskeregen"},{id:285,name:"Knilz"},
+			    {id:286,name:"Kapilz"},{id:287,name:"Bummelz"},{id:288,name:"Muntier"},
+			    {id:289,name:"Letarking"},{id:290,name:"Nincada"},{id:291,name:"Ninjask"},
+			    {id:292,name:"Ninjatom"},{id:293,name:"Flurmel"},{id:294,name:"Krakeelo"},
+			    {id:295,name:"Krawumms"},{id:296,name:"Makuhita"},{id:297,name:"Hariyama"},
+			    {id:298,name:"Azurill"},{id:299,name:"Nasgnet"},{id:300,name:"Eneco"},
+			    {id:301,name:"Enekoro"},{id:302,name:"Zobiris"},{id:303,name:"Flunkifer"},
+			    {id:304,name:"Stollunior"},{id:305,name:"Stollrak"},{id:306,name:"Stolloss"},
+			    {id:307,name:"Meditie"},{id:308,name:"Meditalis"},{id:309,name:"Frizelbliz"},
+			    {id:310,name:"Voltenso"},{id:311,name:"Plusle"},{id:312,name:"Minun"},
+			    {id:313,name:"Volbeat"},{id:314,name:"Illumise"},{id:315,name:"Roselia"},
+			    {id:316,name:"Schluppuck"},{id:317,name:"Schlukwech"},{id:318,name:"Kanivanha"},
+			    {id:319,name:"Tohaido"},{id:320,name:"Wailmer"},{id:321,name:"Wailord"},
+			    {id:322,name:"Camaub"},{id:323,name:"Camerupt"},{id:324,name:"Qurtel"},
+			    {id:325,name:"Spoink"},{id:326,name:"Groink"},{id:327,name:"Pandir"},
+			    {id:328,name:"Knacklion"},{id:329,name:"Vibrava"},{id:330,name:"Libelldra"},
+			    {id:331,name:"Tuska"},{id:332,name:"Noktuska"},{id:333,name:"Wablu"},
+			    {id:334,name:"Altaria"},{id:335,name:"Sengo"},{id:336,name:"Vipitis"},
+			    {id:337,name:"Lunastein"},{id:338,name:"Sonnfel"},{id:339,name:"Schmerbe"},
+			    {id:340,name:"Welsar"},{id:341,name:"Krebscorps"},{id:342,name:"Krebutack"},
+			    {id:343,name:"Puppance"},{id:344,name:"Lepumentas"},{id:345,name:"Liliep"},
+			    {id:346,name:"Wielie"},{id:347,name:"Anorith"},{id:348,name:"Armaldo"},
+			    {id:349,name:"Barschwa"},{id:350,name:"Milotic"},{id:351,name:"Formeo"},
+			    {id:352,name:"Kecleon"},{id:353,name:"Shuppet"},{id:354,name:"Banette"},
+			    {id:355,name:"Zwirrlicht"},{id:356,name:"Zwirrklop"},{id:357,name:"Tropius"},
+			    {id:358,name:"Palimpalim"},{id:359,name:"Absol"},{id:360,name:"Isso"},
+			    {id:361,name:"Schneppke"},{id:362,name:"Firnontor"},{id:363,name:"Seemops"},
+			    {id:364,name:"Seejong"},{id:365,name:"Walraisa"},{id:366,name:"Perlu"},
+			    {id:367,name:"Aalabyss"},{id:368,name:"Saganabyss"},{id:369,name:"Relicanth"},
+			    {id:370,name:"Liebiskus"},{id:371,name:"Kindwurm"},{id:372,name:"Draschel"},
+			    {id:373,name:"Brutalanda"},{id:374,name:"Tanhel"},{id:375,name:"Metang"},
+			    {id:376,name:"Metagross"},{id:377,name:"Regirock"},{id:378,name:"Regice"},
+			    {id:379,name:"Registeel"},{id:380,name:"Latias"},{id:381,name:"Latios"},
+			    {id:382,name:"Kyogre"},{id:383,name:"Groudon"},{id:384,name:"Rayquaza"},
+			    {id:385,name:"Jirachi"},{id:386,name:"Deoxys"},{id:387,name:"Chelast"},
+			    {id:388,name:"Chelcarain"},{id:389,name:"Chelterrar"},{id:390,name:"Panflam"},
+			    {id:391,name:"Panpyro"},{id:392,name:"Panferno"},{id:393,name:"Plinfa"},
+			    {id:394,name:"Pliprin"},{id:395,name:"Impoleon"},{id:396,name:"Staralili"},
+			    {id:397,name:"Staravia"},{id:398,name:"Staraptor"},{id:399,name:"Bidiza"},
+			    {id:400,name:"Bidifas"},{id:401,name:"Zirpurze"},{id:402,name:"Zirpeise"},
+			    {id:403,name:"Sheinux"},{id:404,name:"Luxio"},{id:405,name:"Luxtra"},
+			    {id:406,name:"Knospi"},{id:407,name:"Roserade"},{id:408,name:"Koknodon"},
+			    {id:409,name:"Rameidon"},{id:410,name:"Schilterus"},{id:411,name:"Bollterus"},
+			    {id:412,name:"Burmy"},{id:413,name:"Burmadame"},{id:414,name:"Moterpel"},
+			    {id:415,name:"Wadribie"},{id:416,name:"Honweisel"},{id:417,name:"Pachirisu"},
+			    {id:418,name:"Bamelin"},{id:419,name:"Bojelin"},{id:420,name:"Kikugi"},
+			    {id:421,name:"Kinoso"},{id:422,name:"Schalellos"},{id:423,name:"Gastrodon"},
+			    {id:424,name:"Ambidiffel"},{id:425,name:"Driftlon"},{id:426,name:"Drifzepeli"},
+			    {id:427,name:"Haspiror"},{id:428,name:"Schlapor"},{id:429,name:"Traunmagil"},
+			    {id:430,name:"Kramshef"},{id:431,name:"Charmian"},{id:432,name:"Shnurgarst"},
+			    {id:433,name:"Klingplim"},{id:434,name:"Skunkapuh"},{id:435,name:"Skuntank"},
+			    {id:436,name:"Bronzel"},{id:437,name:"Bronzong"},{id:438,name:"Mobai"},
+			    {id:439,name:"Pantimimi"},{id:440,name:"Wonneira"},{id:441,name:"Plaudagei"},
+			    {id:442,name:"Kryppuk"},{id:443,name:"Kaumalat"},{id:444,name:"Knarksel"},
+			    {id:445,name:"Knakrack"},{id:446,name:"Mampfaxo"},{id:447,name:"Riolu"},
+			    {id:448,name:"Lucario"},{id:449,name:"Hippopotas"},{id:450,name:"Hippoterus"},
+			    {id:451,name:"Pionskora"},{id:452,name:"Piondragi"},{id:453,name:"Glibunkel"},
+			    {id:454,name:"Toxiquak"},{id:455,name:"Venuflibis"},{id:456,name:"Finneon"},
+			    {id:457,name:"Lumineon"},{id:458,name:"Mantirps"},{id:459,name:"Shnebedeck"},
+			    {id:460,name:"Rexblisar"},{id:461,name:"Snibunna"},{id:462,name:"Magnezone"},
+			    {id:463,name:"Schlurplek"},{id:464,name:"Rihornior"},{id:465,name:"Tangoloss"},
+			    {id:466,name:"Elevoltek"},{id:467,name:"Magbrant"},{id:468,name:"Togekiss"},
+			    {id:469,name:"Yanmega"},{id:470,name:"Folipurba"},{id:471,name:"Glaziola"},
+			    {id:472,name:"Skorgro"},{id:473,name:"Mamutel"},{id:474,name:"Porygon-Z"},
+			    {id:475,name:"Galagladi"},{id:476,name:"Voluminas"},{id:477,name:"Zwirrfinst"},
+			    {id:478,name:"Frosdedje"},{id:479,name:"Rotom"},{id:480,name:"Selfe"},
+			    {id:481,name:"Vesprit"},{id:482,name:"Tobut"},{id:483,name:"Dialga"},
+			    {id:484,name:"Palkia"},{id:485,name:"Heatran"},{id:486,name:"Regigigas"},
+			    {id:487,name:"Giratina"},{id:488,name:"Cresselia"},{id:489,name:"Phione"},
+			    {id:490,name:"Manaphy"},{id:491,name:"Darkrai"},{id:492,name:"Shaymin"},
+			    {id:493,name:"Arceus"}
+			];
+
+			const LOCATIONS = [
+			    { region: "Johto", category: "Städte & Dörfer", places: ["Neuborkia","Rosalia City","Viola City","Azalea City","Dukatia City","Teak City","Olivenau City","Anemone City","Mahagonia City","Ebenholz City"] },
+			    { region: "Johto", category: "Routen", places: ["Route 26","Route 27","Route 29","Route 30","Route 31","Route 32","Route 33","Route 34","Route 35","Route 36","Route 37","Route 38","Route 39","Route 40","Route 41","Route 42","Route 43","Route 44","Route 45","Route 46","Route 47","Route 48"] },
+			    { region: "Johto", category: "Höhlen, Gebäude & Spezialgebiete", places: ["Dunkelhöhle","Knofensa-Turm","Einheitshöhle","Alphabet-Ruinen","Flegmon-Brunnen","Steineichenwald","Nationalpark","Dukatia-Passage (Untergrund)","Brennender Turm","Glockenturm (Zinn-Turm)","Strudelinseln","Kesselberg","See des Zorns","Team Rokko Hauptquartier","Eispfad","Drachenhöhle","Felsenschlundhöhle","Safari-Zone","Tojo-Fälle","Siegesstraße","Pokémon Liga (Indigo Plateau)"] },
+			    { region: "Kanto", category: "Städte & Dörfer", places: ["Orania City","Saffronia City","Prismania City","Fuchsania City","Lavandia","Marmoria City","Azuria City","Vertania City","Alabastia","Cinnabar Island (Zinninseln / Vulkaninsel)"] },
+			    { region: "Kanto", category: "Routen", places: ["Route 1","Route 2","Route 3","Route 4","Route 5","Route 6","Route 7","Route 8","Route 9","Route 10","Route 11","Route 12","Route 13","Route 14","Route 15","Route 16","Route 17","Route 18","Route 19","Route 20","Route 21","Route 22","Route 24","Route 25","Route 28"] },
+			    { region: "Kanto", category: "Höhlen, Gebäude & Spezialgebiete", places: ["MS Aqua (Schiff)","Digda-Höhle","Vertania-Wald","Mondberg","Kraftwerk","Felsentunnel","Silberberg (Außenbereich)","Silberberg-Höhle (Innenbereich)","Azuria-Höhle"] }
+			];
+
+			const getSprite = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+
+			const pokemonOptionsHtml = POKEMON_DATA.map(p =>
+			    `<div class="pokemon-option" data-id="${p.id}" data-name="${p.name.toLowerCase()}">
+			        <img src="${getSprite(p.id)}" alt="${p.name}" onerror="this.style.display='none'">
+			        <span class="pokemon-name">${p.name}</span>
+			        <span class="pokemon-id">#${String(p.id).padStart(3,'0')}</span>
+			    </div>`
+			).join('');
+
+			let appState = {
+			    tallyP1: 0,
+			    tallyP2: 0,
+			    tallyResets: 0,
+			    customLocations: [],
+			    rowsData: []
+			};
+
+			let currentFilter = 'all';
+			let locationRowsDOM = [];
+			let flatPlacesList = [];
+			let isSyncingFromFirebase = false;
+			let saveTimeout = null;
+
+			function initFlatPlaces() {
+			    flatPlacesList = [];
+			    LOCATIONS.forEach(sec => {
+			        sec.places.forEach(p => flatPlacesList.push(p));
+			    });
+			    appState.customLocations.forEach(p => flatPlacesList.push(p));
+			}
+
+			function ensureStateSize() {
+			    while (appState.rowsData.length < flatPlacesList.length) {
+			        appState.rowsData.push({ p1Id: null, p1Name: null, p2Id: null, p2Name: null, caught: false, dead: false });
+			    }
+			}
+
+			function createPokemonSelectHtml(playerId, rowIndex) {
+			    return `
+			        <div class="pokemon-select-wrapper">
+			            <div class="selected-pokemon" data-player="${playerId}" data-row="${rowIndex}" onclick="clearPokemon('${playerId}',${rowIndex})">
+			                <span class="no-pokemon">—</span>
+			            </div>
+			            <input type="text" class="pokemon-search" placeholder="..." data-player="${playerId}" data-row="${rowIndex}"
+			                onfocus="showDropdown('${playerId}',${rowIndex})" oninput="filterPokemon(this)" onclick="event.stopPropagation()">
+			            <div class="pokemon-dropdown" id="dropdown-${playerId}-${rowIndex}">${pokemonOptionsHtml}</div>
+			        </div>`;
+			}
+
+			function showDropdown(playerId, rowIndex) {
+			    document.getElementById(`dropdown-${playerId}-${rowIndex}`).classList.add('active');
+			}
+
+			function hideAllDropdowns() {
+			    document.querySelectorAll('.pokemon-dropdown').forEach(d => d.classList.remove('active'));
+			}
+
+			function filterPokemon(input) {
+			    const term = input.value.toLowerCase();
+			    input.nextElementSibling.querySelectorAll('.pokemon-option').forEach(opt => {
+			        opt.classList.toggle('hidden', !opt.dataset.name.includes(term));
+			    });
+			}
+
+			function selectPokemon(playerId, rowIndex, pokemonId, pokemonName, skipSave = false) {
+			    ensureStateSize();
+			    const rowObj = appState.rowsData[rowIndex];
+			    if (playerId === 'player1') { rowObj.p1Id = pokemonId; rowObj.p1Name = pokemonName; }
+			    else { rowObj.p2Id = pokemonId; rowObj.p2Name = pokemonName; }
+
+			    renderRowPokemonUI(playerId, rowIndex);
+			    hideAllDropdowns();
+			    updateOverview();
+			    if (!skipSave) debouncedSave();
+			}
+
+			function clearPokemon(playerId, rowIndex, skipSave = false) {
+			    ensureStateSize();
+			    const rowObj = appState.rowsData[rowIndex];
+			    if (playerId === 'player1') { rowObj.p1Id = null; rowObj.p1Name = null; }
+			    else { rowObj.p2Id = null; rowObj.p2Name = null; }
+
+			    renderRowPokemonUI(playerId, rowIndex);
+			    updateOverview();
+			    if (!skipSave) debouncedSave();
+			}
+
+			function renderRowPokemonUI(playerId, rowIndex) {
+			    const rowObj = appState.rowsData[rowIndex];
+			    const display = document.querySelector(`.selected-pokemon[data-player="${playerId}"][data-row="${rowIndex}"]`);
+			    if (!display) return;
+
+			    const pId = playerId === 'player1' ? rowObj.p1Id : rowObj.p2Id;
+			    const pName = playerId === 'player1' ? rowObj.p1Name : rowObj.p2Name;
+
+			    if (pId) {
+			        display.innerHTML = `
+			            <img src="${getSprite(pId)}" alt="${pName}">
+			            <span>${pName}</span>
+			            <span class="clear-btn" onclick="event.stopPropagation(); clearPokemon('${playerId}',${rowIndex})">×</span>`;
+			        display.dataset.pokemonId = pId;
+			        display.dataset.pokemonName = pName;
+			    } else {
+			        display.innerHTML = '<span class="no-pokemon">—</span>';
+			        delete display.dataset.pokemonId;
+			        delete display.dataset.pokemonName;
+			    }
+			}
+
+			// SCHNELLE UNVERZÖGERTE TALLY-AKTION
+			function changeTally(player, delta, skipSave = false) {
+			    if (player === 'p1') appState.tallyP1 = Math.max(0, appState.tallyP1 + delta);
+			    if (player === 'p2') appState.tallyP2 = Math.max(0, appState.tallyP2 + delta);
+			    
+			    renderTalliesUI();
+			    if (!skipSave) debouncedSave();
+			}
+
+			function renderTalliesUI() {
+			    document.getElementById('tally-p1').textContent = appState.tallyP1;
+			    document.getElementById('tally-p2').textContent = appState.tallyP2;
+			    document.getElementById('tally-resets').textContent = appState.tallyResets;
+			}
+
+			function onCheckboxChange(rowIndex, type) {
+			    ensureStateSize();
+			    const rowObj = appState.rowsData[rowIndex];
+			    const rowDOM = locationRowsDOM[rowIndex];
+
+			    if (type === 'caught') {
+			        rowObj.caught = rowDOM.querySelector('td:nth-child(4) input').checked;
+			    } else if (type === 'dead') {
+			        rowObj.dead = rowDOM.querySelector('td:nth-child(5) input').checked;
+			    }
+
+			    updateOverview();
+			    debouncedSave();
+			}
+
+			function setFilter(filter) {
+			    currentFilter = filter;
+			    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+			    document.querySelector(`.filter-btn[onclick="setFilter('${filter}')"]`).classList.add('active');
+			    updateOverview();
+			}
+
+			function isLinkAvailableState(rowIndex) {
+			    const row = appState.rowsData[rowIndex];
+			    if (!row) return false;
+			    const hasP1 = !!row.p1Id;
+			    const hasP2 = !!row.p2Id;
+			    if (!hasP1 && !hasP2) return false;
+
+			    return (hasP1 && row.caught && !row.dead) && (hasP2 && row.caught && !row.dead);
+			}
+
+			function updateOverview() {
+			    const tbody = document.getElementById('overviewBody');
+			    const activeItems = [];
+
+			    flatPlacesList.forEach((place, index) => {
+			        const row = appState.rowsData[index];
+			        if (row && (row.p1Id || row.p2Id)) {
+			            activeItems.push({
+			                index: index,
+			                place: place,
+			                available: isLinkAvailableState(index)
+			            });
+			        }
+			    });
+
+			    activeItems.sort((a, b) => b.available - a.available);
+
+			    let filtered = activeItems;
+			    if (currentFilter === 'available') filtered = activeItems.filter(p => p.available);
+			    else if (currentFilter === 'unavailable') filtered = activeItems.filter(p => !p.available);
+
+			    if (filtered.length === 0) {
+			        tbody.innerHTML = `<tr><td colspan="4" style="color:#526375; font-style:italic; padding:15px;">Keine Pokémon eingetragen</td></tr>`;
+			        return;
+			    }
+
+			    tbody.innerHTML = filtered.map((item, i) => {
+			        const r = appState.rowsData[item.index];
+			        const p1Html = r.p1Id ? `<div class="overview-pokemon${r.dead ? ' dead' : ''}"><img src="${getSprite(r.p1Id)}"><span>${r.p1Name}</span></div>` : '<span class="overview-pokemon empty">—</span>';
+			        const p2Html = r.p2Id ? `<div class="overview-pokemon${r.dead ? ' dead' : ''}"><img src="${getSprite(r.p2Id)}"><span>${r.p2Name}</span></div>` : '<span class="overview-pokemon empty">—</span>';
+			        
+			        return `<tr>
+			            <td>${i + 1}</td>
+			            <td>${p1Html}</td>
+			            <td>${p2Html}</td>
+			            <td>${item.place}</td>
+			        </tr>`;
+			    }).join('');
+			}
+
+			function createTableRowDOM(place, index) {
+			    const tr = document.createElement('tr');
+			    tr.innerHTML = `
+			        <td>${place}</td>
+			        <td>${createPokemonSelectHtml('player1', index)}</td>
+			        <td>${createPokemonSelectHtml('player2', index)}</td>
+			        <td><div class="checkbox-wrapper"><label class="custom-checkbox"><input type="checkbox" onchange="onCheckboxChange(${index}, 'caught')"><span class="checkmark"></span></label></div></td>
+			        <td><div class="checkbox-wrapper"><label class="custom-checkbox dead"><input type="checkbox" onchange="onCheckboxChange(${index}, 'dead')"><span class="checkmark"></span></label></div></td>`;
+			    return tr;
+			}
+
+			function buildTableDOM() {
+			    const tbody = document.getElementById('tableBody');
+			    tbody.innerHTML = '';
+			    locationRowsDOM = [];
+			    initFlatPlaces();
+			    ensureStateSize();
+
+			    let index = 0;
+			    LOCATIONS.forEach((section) => {
+			        const tr = document.createElement('tr');
+			        tr.className = 'section-header';
+			        tr.innerHTML = `<td colspan="5">${section.region}</td>`;
+			        tbody.appendChild(tr);
+
+			        const catTr = document.createElement('tr');
+			        catTr.className = 'category-header';
+			        catTr.innerHTML = `<td colspan="5">${section.category}</td>`;
+			        tbody.appendChild(catTr);
+
+			        section.places.forEach((place) => {
+			            const rowDOM = createTableRowDOM(place, index);
+			            tbody.appendChild(rowDOM);
+			            locationRowsDOM.push(rowDOM);
+			            index++;
+			        });
+			    });
+
+			    appState.customLocations.forEach((place) => {
+			        const rowDOM = createTableRowDOM(place, index);
+			        tbody.appendChild(rowDOM);
+			        locationRowsDOM.push(rowDOM);
+			        index++;
+			    });
+			}
+
+			function syncFullUIFromState() {
+			    renderTalliesUI();
+			    ensureStateSize();
+
+			    appState.rowsData.forEach((rowObj, idx) => {
+			        const rowDOM = locationRowsDOM[idx];
+			        if (!rowDOM) return;
+
+			        renderRowPokemonUI('player1', idx);
+			        renderRowPokemonUI('player2', idx);
+
+			        rowDOM.querySelector('td:nth-child(4) input').checked = !!rowObj.caught;
+			        rowDOM.querySelector('td:nth-child(5) input').checked = !!rowObj.dead;
+			    });
+
+			    updateOverview();
+			}
+
+			/* --- RESET LOGIK --- */
+			function confirmReset() {
+			    if (confirm("Möchtest du wirklich alle Einträge in der Tabelle zurücksetzen? (Die Striche bleiben bestehen, der Reset-Counter erhöht sich um 1)")) {
+			        appState.rowsData.forEach(r => {
+			            r.p1Id = null; r.p1Name = null;
+			            r.p2Id = null; r.p2Name = null;
+			            r.caught = false; r.dead = false;
+			        });
+			        appState.tallyResets += 1;
+
+			        syncFullUIFromState();
+			        saveToFirebase();
+			    }
+			}
+
+			function resetResetsCounter() {
+			    if (confirm("Möchtest du den Reset-Counter wirklich wieder auf 0 zurücksetzen?")) {
+			        appState.tallyResets = 0;
+			        renderTalliesUI();
+			        saveToFirebase();
+			    }
+			}
+
+			/* --- FIREBASE SYNC --- */
+			function debouncedSave() {
+			    if (saveTimeout) clearTimeout(saveTimeout);
+			    saveTimeout = setTimeout(saveToFirebase, 300);
+			}
+
+			function saveToFirebase() {
+			    if (isSyncingFromFirebase) return;
+			    trackerRef.set(appState);
+			}
+
+			function listenToFirebase() {
+			    trackerRef.on('value', (snapshot) => {
+			        const data = snapshot.val();
+			        if (!data) return;
+
+			        if (document.querySelector('.pokemon-dropdown.active')) return;
+
+			        isSyncingFromFirebase = true;
+			        appState = data;
+			        if (!appState.customLocations) appState.customLocations = [];
+			        if (!appState.rowsData) appState.rowsData = [];
+
+			        const expectedTotal = LOCATIONS.reduce((acc, s) => acc + s.places.length, 0) + appState.customLocations.length;
+			        if (locationRowsDOM.length < expectedTotal) {
+			            buildTableDOM();
+			        }
+
+			        syncFullUIFromState();
+			        isSyncingFromFirebase = false;
+			    });
+			}
+
+			/* --- MODAL FOR NEW LOCATION --- */
+			function openAddModal() { document.getElementById('addModal').classList.add('active'); }
+			function closeAddModal() { document.getElementById('addModal').classList.remove('active'); }
+
+			function saveNewLocation() {
+			    const placeName = document.getElementById('newPlaceName').value.trim();
+			    const categoryName = document.getElementById('newCategory').value.trim() || "Zusatzgebiete";
+			    const regionName = document.getElementById('newRegion').value;
+
+			    if (!placeName) { alert("Bitte einen Namen für den Ort eingeben!"); return; }
+
+			    appState.customLocations.push(placeName);
+			    initFlatPlaces();
+
+			    const tbody = document.getElementById('tableBody');
+			    const index = locationRowsDOM.length;
+
+			    const catTr = document.createElement('tr');
+			    catTr.className = 'category-header';
+			    catTr.innerHTML = `<td colspan="5">${regionName} - ${categoryName}</td>`;
+			    tbody.appendChild(catTr);
+
+			    const tr = createTableRowDOM(placeName, index);
+			    tbody.appendChild(tr);
+			    locationRowsDOM.push(tr);
+
+			    ensureStateSize();
+
+			    document.getElementById('newPlaceName').value = '';
+			    closeAddModal();
+			    updateOverview();
+			    saveToFirebase();
+
+			    tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+
+			function showTable() {
+			    document.getElementById('tableContainer').style.display = 'block';
+			    document.querySelectorAll('.toggle-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+			}
+
+			function hideTable() {
+			    document.getElementById('tableContainer').style.display = 'none';
+			    document.querySelectorAll('.toggle-btn').forEach((b, i) => b.classList.toggle('active', i === 1));
+			}
+
+			document.addEventListener('DOMContentLoaded', () => {
+			    buildTableDOM();
+			    listenToFirebase();
+
+			    document.addEventListener('click', e => {
+			        if (!e.target.closest('.pokemon-select-wrapper')) hideAllDropdowns();
+			    });
+
+			    document.addEventListener('click', e => {
+			        const opt = e.target.closest('.pokemon-option');
+			        if (opt) {
+			            const dropdown = opt.closest('.pokemon-dropdown');
+			            const search = dropdown.previousElementSibling;
+			            const p = POKEMON_DATA.find(p => p.id === parseInt(opt.dataset.id));
+			            selectPokemon(search.dataset.player, parseInt(search.dataset.row), p.id, p.name);
+			        }
+			    });
+			});
+		</script>
+	</body>
+</html>
