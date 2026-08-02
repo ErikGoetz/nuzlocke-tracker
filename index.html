@@ -18,6 +18,7 @@
 				--text-yellow: #ffde00;
 				--p1-color: #ff5959;
 				--p2-color: #599bff;
+				--active-cap-green: #4caf50;
 			}
 
 			* { box-sizing: border-box; margin: 0; padding: 0; }
@@ -92,12 +93,137 @@
 			    width: 28px; height: 28px; border: none; border-radius: 50%; cursor: pointer;
 			    font-family: 'Press Start 2P', monospace; font-size: 11px;
 			    background: linear-gradient(135deg, #4f5d73, #2d3748); color: #fff;
-			    box-shadow: 0 2px 4px rgba(0,0,0,0.4); transition: all 0.1s ease;
+			    box-shadow: 0 2px 4px rgba(0,0,0,0.4); transition: transform 0.05s, background 0.1s;
 			    display: flex; align-items: center; justify-content: center; line-height: 1;
 			    user-select: none;
+			    touch-action: manipulation;
 			}
-			.tally-btn:hover { transform: translateY(-1px); background: linear-gradient(135deg, #637591, #3a475c); }
-			.tally-btn:active { transform: translateY(1px); box-shadow: none; }
+			.tally-btn:hover { background: linear-gradient(135deg, #637591, #3a475c); }
+			.tally-btn:active { transform: scale(0.9); background: var(--gold-main); color: #000; }
+
+			/* --- LEVEL CAP SECTION (ZENTRIERT) --- */
+			.level-cap-section {
+			    background: var(--card-bg);
+			    border: 3px solid var(--card-border);
+			    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.4);
+			    border-radius: 10px;
+			    padding: 15px;
+			    margin-bottom: 15px;
+			}
+
+			.cap-header {
+			    display: flex;
+			    justify-content: space-between;
+			    align-items: center;
+			    margin-bottom: 12px;
+			    flex-wrap: wrap;
+			    gap: 10px;
+			}
+
+			.cap-title {
+			    font-family: 'Press Start 2P', monospace;
+			    color: var(--text-yellow);
+			    font-size: 11px;
+			}
+
+			.region-tabs {
+			    display: flex;
+			    gap: 6px;
+			}
+
+			.region-tab-btn {
+			    padding: 6px 12px;
+			    background: #141b24;
+			    border: 1px solid #3a4b63;
+			    border-radius: 4px;
+			    color: #8c9ba5;
+			    font-family: 'Press Start 2P', monospace;
+			    font-size: 9px;
+			    cursor: pointer;
+			    transition: all 0.2s;
+			}
+
+			.region-tab-btn.active {
+			    background: linear-gradient(135deg, var(--silver-main), var(--silver-dark));
+			    color: #fff;
+			    border-color: #82b3dc;
+			    box-shadow: 0 0 8px rgba(74, 142, 194, 0.4);
+			}
+
+			.cap-list {
+			    display: flex;
+			    justify-content: center;
+			    gap: 8px;
+			    overflow-x: auto;
+			    padding: 8px 4px 12px 4px;
+			    scroll-behavior: smooth;
+			}
+
+			.cap-card {
+			    flex: 0 0 auto;
+			    background: rgba(10, 15, 22, 0.6);
+			    border: 2px solid rgba(255,255,255,0.1);
+			    border-radius: 8px;
+			    padding: 8px 12px;
+			    text-align: center;
+			    min-width: 115px;
+			    transition: all 0.3s ease;
+			    cursor: pointer;
+			}
+
+			.cap-card.active {
+			    border-color: var(--active-cap-green);
+			    background: rgba(76, 175, 80, 0.15);
+			    box-shadow: 0 0 12px rgba(76, 175, 80, 0.6), inset 0 0 8px rgba(76, 175, 80, 0.3);
+			    transform: translateY(-2px);
+			}
+
+			.cap-card-boss {
+			    font-size: 10px;
+			    color: #a0b0c0;
+			    margin-bottom: 4px;
+			    font-weight: 600;
+			}
+
+			.cap-card.active .cap-card-boss {
+			    color: #ffffff;
+			}
+
+			.cap-card-lvl {
+			    font-family: 'Press Start 2P', monospace;
+			    font-size: 11px;
+			    color: #fff;
+			}
+
+			.cap-card.active .cap-card-lvl {
+			    color: #81c784;
+			    text-shadow: 0 0 6px rgba(76, 175, 80, 0.8);
+			}
+
+			.cap-controls {
+			    display: flex;
+			    justify-content: center;
+			    gap: 12px;
+			    margin-top: 6px;
+			}
+
+			.cap-nav-btn {
+			    padding: 6px 14px;
+			    background: #141b24;
+			    border: 1px solid #3a4b63;
+			    border-radius: 4px;
+			    color: var(--text-light);
+			    font-family: 'Press Start 2P', monospace;
+			    font-size: 9px;
+			    cursor: pointer;
+			    transition: all 0.2s;
+			}
+
+			.cap-nav-btn:hover {
+			    background: #253346;
+			    color: #fff;
+			    border-color: var(--silver-main);
+			}
 
 			.filter-section {
 			    background: var(--card-bg); border: 2px solid var(--card-border);
@@ -264,6 +390,7 @@
 			    h1 { font-size: 13px; }
 			    .tally-section { gap: 10px; padding: 10px; }
 			    .selected-pokemon img, .pokemon-option img { width: 20px; height: 20px; }
+			    .cap-list { justify-content: flex-start; } /* Mobilgeräten Wischen gewähren */
 			    th:nth-child(1) { width: 30%; }
 			    th:nth-child(2), th:nth-child(3) { width: 25%; }
 			    th:nth-child(4), th:nth-child(5) { width: 10%; }
@@ -275,7 +402,7 @@
 
 		<div class="tally-section">
 			<div class="tally-player">
-				<h3>Erik</h3>
+				<h3>Spieler 1</h3>
 				<div class="tally-row">
 					<span class="tally-label">Strich</span>
 					<button class="tally-btn" onclick="changeTally('p1', -1)">−</button>
@@ -284,7 +411,7 @@
 				</div>
 			</div>
 			<div class="tally-player">
-				<h3>Joshi</h3>
+				<h3>Spieler 2</h3>
 				<div class="tally-row">
 					<span class="tally-label">Strich</span>
 					<button class="tally-btn" onclick="changeTally('p2', -1)">−</button>
@@ -301,6 +428,24 @@
 			</div>
 		</div>
 
+		<!-- LEVEL CAP SECTION -->
+		<div class="level-cap-section">
+			<div class="cap-header">
+				<span class="cap-title">Level Caps</span>
+				<div class="region-tabs">
+					<button class="region-tab-btn active" id="tab-johto" onclick="selectCapRegion('johto')">Johto</button>
+					<button class="region-tab-btn" id="tab-kanto" onclick="selectCapRegion('kanto')">Kanto</button>
+				</div>
+			</div>
+
+			<div class="cap-list" id="capListContainer"></div>
+
+			<div class="cap-controls">
+				<button class="cap-nav-btn" onclick="navLevelCap(-1)">◄ Voriges Cap</button>
+				<button class="cap-nav-btn" onclick="navLevelCap(1)">Nächstes Cap ►</button>
+			</div>
+		</div>
+
 		<div class="filter-section">
 			<button class="filter-btn active" onclick="setFilter('all')">Alle</button>
 			<button class="filter-btn" onclick="setFilter('available')">Verfügbar</button>
@@ -312,8 +457,8 @@
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>Erik</th>
-						<th>Joshi</th>
+						<th>Spieler 1</th>
+						<th>Spieler 2</th>
 						<th>Ort</th>
 					</tr>
 				</thead>
@@ -334,8 +479,8 @@
 					<thead>
 						<tr>
 							<th>Ort</th>
-							<th>Erik</th>
-							<th>Joshi</th>
+							<th>Spieler 1</th>
+							<th>Spieler 2</th>
 							<th>Gef.</th>
 							<th>Tot</th>
 						</tr>
@@ -394,6 +539,41 @@
 			firebase.initializeApp(firebaseConfig);
 			const db = firebase.database();
 			const trackerRef = db.ref('tracker_data');
+
+			// LEVEL CAPS MIT ANZEIGE DES ORDENS / TOP 4 EINZELN & REMATCHES
+			const LEVEL_CAPS = {
+			    johto: [
+			        { boss: "1. Orden: Falk", lvl: 13 },
+			        { boss: "2. Orden: Kai", lvl: 17 },
+			        { boss: "3. Orden: Bianka", lvl: 19 },
+			        { boss: "4. Orden: Jens", lvl: 25 },
+			        { boss: "5. Orden: Hartwig", lvl: 31 },
+			        { boss: "7. Orden: Norbert", lvl: 34 },
+			        { boss: "6. Orden: Jasmin", lvl: 35 },
+			        { boss: "8. Orden: Sandra", lvl: 41 },
+			        { boss: "Top 4: Willi", lvl: 40 },
+			        { boss: "Top 4: Koga", lvl: 41 },
+			        { boss: "Top 4: Bruno", lvl: 42 },
+			        { boss: "Top 4: Melanie", lvl: 47 },
+			        { boss: "Champ: Siegfried", lvl: 50 },
+			    ],
+			    kanto: [
+			        { boss: "1. Orden: Major Bob", lvl: 53 },
+			        { boss: "2. Orden: Sabrina", lvl: 53 },
+			        { boss: "3. Orden: Misty", lvl: 55 },
+			        { boss: "4. Orden: Erika", lvl: 56 },
+			        { boss: "5. Orden: Janina", lvl: 56 },
+			        { boss: "6. Orden: Rocko", lvl: 56 },
+			        { boss: "7. Orden: Pyro", lvl: 59 },
+			        { boss: "8. Orden: Blau", lvl: 60 },
+					{ boss: "Rematch: Willi", lvl: 62 },
+			        { boss: "Rematch: Koga", lvl: 64 },
+			        { boss: "Rematch: Bruno", lvl: 66 },
+			        { boss: "Rematch: Melanie", lvl: 64 },
+			        { boss: "Rematch: Siegfried", lvl: 75 },
+			        { boss: "Finale: Rot", lvl: 88 }
+			    ]
+			};
 
 			const POKEMON_DATA = [
 			    {id:1,name:"Bisasam"},{id:2,name:"Bisaknosp"},{id:3,name:"Bisaflor"},
@@ -586,6 +766,8 @@
 			    tallyP1: 0,
 			    tallyP2: 0,
 			    tallyResets: 0,
+			    capRegion: 'johto',
+			    capIndex: 0,
 			    customLocations: [],
 			    rowsData: []
 			};
@@ -595,6 +777,7 @@
 			let flatPlacesList = [];
 			let isSyncingFromFirebase = false;
 			let saveTimeout = null;
+			let lastLocalTallyClick = 0;
 
 			function initFlatPlaces() {
 			    flatPlacesList = [];
@@ -682,13 +865,62 @@
 			    }
 			}
 
-			// SCHNELLE UNVERZÖGERTE TALLY-AKTION
-			function changeTally(player, delta, skipSave = false) {
+			function renderLevelCapsUI() {
+			    const region = appState.capRegion || 'johto';
+			    const caps = LEVEL_CAPS[region];
+			    const container = document.getElementById('capListContainer');
+
+			    document.getElementById('tab-johto').classList.toggle('active', region === 'johto');
+			    document.getElementById('tab-kanto').classList.toggle('active', region === 'kanto');
+
+			    if (appState.capIndex < 0) appState.capIndex = 0;
+			    if (appState.capIndex >= caps.length) appState.capIndex = caps.length - 1;
+
+			    container.innerHTML = caps.map((c, i) => {
+			        const isActive = i === appState.capIndex;
+			        return `
+			            <div class="cap-card${isActive ? ' active' : ''}" onclick="setSpecificCap(${i})">
+			                <div class="cap-card-boss">${c.boss}</div>
+			                <div class="cap-card-lvl">Lv. ${c.lvl}</div>
+			            </div>`;
+			    }).join('');
+
+			    const activeCard = container.querySelector('.cap-card.active');
+			    if (activeCard) {
+			        activeCard.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+			    }
+			}
+
+			function selectCapRegion(region) {
+			    appState.capRegion = region;
+			    appState.capIndex = 0;
+			    renderLevelCapsUI();
+			    saveToFirebase();
+			}
+
+			function setSpecificCap(index) {
+			    appState.capIndex = index;
+			    renderLevelCapsUI();
+			    saveToFirebase();
+			}
+
+			function navLevelCap(delta) {
+			    const caps = LEVEL_CAPS[appState.capRegion || 'johto'];
+			    let nextIndex = appState.capIndex + delta;
+			    if (nextIndex >= 0 && nextIndex < caps.length) {
+			        appState.capIndex = nextIndex;
+			        renderLevelCapsUI();
+			        saveToFirebase();
+			    }
+			}
+
+			function changeTally(player, delta) {
+			    lastLocalTallyClick = Date.now();
 			    if (player === 'p1') appState.tallyP1 = Math.max(0, appState.tallyP1 + delta);
 			    if (player === 'p2') appState.tallyP2 = Math.max(0, appState.tallyP2 + delta);
 			    
 			    renderTalliesUI();
-			    if (!skipSave) debouncedSave();
+			    saveToFirebase();
 			}
 
 			function renderTalliesUI() {
@@ -817,6 +1049,7 @@
 
 			function syncFullUIFromState() {
 			    renderTalliesUI();
+			    renderLevelCapsUI();
 			    ensureStateSize();
 
 			    appState.rowsData.forEach((rowObj, idx) => {
@@ -835,13 +1068,15 @@
 
 			/* --- RESET LOGIK --- */
 			function confirmReset() {
-			    if (confirm("Möchtest du wirklich alle Einträge in der Tabelle zurücksetzen? (Die Striche bleiben bestehen, der Reset-Counter erhöht sich um 1)")) {
+			    if (confirm("Möchtest du wirklich alle Einträge in der Tabelle zurücksetzen? (Die Striche bleiben bestehen, das Level Cap springt auf den Anfang zurück)")) {
 			        appState.rowsData.forEach(r => {
 			            r.p1Id = null; r.p1Name = null;
 			            r.p2Id = null; r.p2Name = null;
 			            r.caught = false; r.dead = false;
 			        });
 			        appState.tallyResets += 1;
+			        appState.capRegion = 'johto';
+			        appState.capIndex = 0;
 
 			        syncFullUIFromState();
 			        saveToFirebase();
@@ -874,10 +1109,23 @@
 
 			        if (document.querySelector('.pokemon-dropdown.active')) return;
 
+			        const recentlyClickedTally = (Date.now() - lastLocalTallyClick) < 1200;
+
 			        isSyncingFromFirebase = true;
+			        
+			        const savedTallyP1 = appState.tallyP1;
+			        const savedTallyP2 = appState.tallyP2;
+
 			        appState = data;
 			        if (!appState.customLocations) appState.customLocations = [];
 			        if (!appState.rowsData) appState.rowsData = [];
+			        if (!appState.capRegion) appState.capRegion = 'johto';
+			        if (typeof appState.capIndex !== 'number') appState.capIndex = 0;
+
+			        if (recentlyClickedTally) {
+			            appState.tallyP1 = savedTallyP1;
+			            appState.tallyP2 = savedTallyP2;
+			        }
 
 			        const expectedTotal = LOCATIONS.reduce((acc, s) => acc + s.places.length, 0) + appState.customLocations.length;
 			        if (locationRowsDOM.length < expectedTotal) {
