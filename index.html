@@ -402,7 +402,7 @@
 
 		<div class="tally-section">
 			<div class="tally-player">
-				<h3>Spieler 1</h3>
+				<h3>Erik</h3>
 				<div class="tally-row">
 					<span class="tally-label">Strich</span>
 					<button class="tally-btn" onclick="changeTally('p1', -1)">−</button>
@@ -411,7 +411,7 @@
 				</div>
 			</div>
 			<div class="tally-player">
-				<h3>Spieler 2</h3>
+				<h3>Joshi</h3>
 				<div class="tally-row">
 					<span class="tally-label">Strich</span>
 					<button class="tally-btn" onclick="changeTally('p2', -1)">−</button>
@@ -457,8 +457,8 @@
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>Spieler 1</th>
-						<th>Spieler 2</th>
+						<th>Erik</th>
+						<th>Joshi</th>
 						<th>Ort</th>
 					</tr>
 				</thead>
@@ -479,8 +479,8 @@
 					<thead>
 						<tr>
 							<th>Ort</th>
-							<th>Spieler 1</th>
-							<th>Spieler 2</th>
+							<th>Erik</th>
+							<th>Joshi</th>
 							<th>Gef.</th>
 							<th>Tot</th>
 						</tr>
@@ -552,8 +552,8 @@
 			        { boss: "6. Orden: Jasmin", lvl: 35 },
 			        { boss: "8. Orden: Sandra", lvl: 41 },
 			        { boss: "Top 4: Willi", lvl: 40 },
-			        { boss: "Top 4: Koga", lvl: 41 },
-			        { boss: "Top 4: Bruno", lvl: 42 },
+			        { boss: "Top 4: Koga", lvl: 42 },
+			        { boss: "Top 4: Bruno", lvl: 46 },
 			        { boss: "Top 4: Melanie", lvl: 47 },
 			        { boss: "Champ: Siegfried", lvl: 50 },
 			    ],
@@ -568,7 +568,7 @@
 			        { boss: "8. Orden: Blau", lvl: 60 },
 					{ boss: "Rematch: Willi", lvl: 62 },
 			        { boss: "Rematch: Koga", lvl: 64 },
-			        { boss: "Rematch: Bruno", lvl: 66 },
+			        { boss: "Rematch: Bruno", lvl: 64 },
 			        { boss: "Rematch: Melanie", lvl: 64 },
 			        { boss: "Rematch: Siegfried", lvl: 75 },
 			        { boss: "Finale: Rot", lvl: 88 }
@@ -885,10 +885,6 @@
 			            </div>`;
 			    }).join('');
 
-			    const activeCard = container.querySelector('.cap-card.active');
-			    if (activeCard) {
-			        activeCard.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-			    }
 			}
 
 			function selectCapRegion(region) {
