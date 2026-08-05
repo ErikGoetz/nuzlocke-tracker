@@ -8,6 +8,7 @@
 		<style>
 			:root {/* --- LEVEL CAP SECTION (KOMPAKT) --- */
 /* --- LEVEL CAP SECTION (KOMPAKT) --- */
+/* --- LEVEL CAP SECTION (KOMPAKT & DREIZEILIG) --- */
 .level-cap-section {
     background: var(--card-bg);
     border: 3px solid var(--card-border);
@@ -59,7 +60,7 @@
 .cap-list {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* Ermöglicht Umbruch auf mehreren Zeilen, falls gewünscht */
+    flex-wrap: wrap;
     gap: 6px;
     padding: 6px 2px 10px 2px;
 }
@@ -69,12 +70,16 @@
     background: rgba(10, 15, 22, 0.6);
     border: 2px solid rgba(255,255,255,0.1);
     border-radius: 6px;
-    padding: 5px 6px; /* Kompakteres Padding */
+    padding: 6px 4px;
     text-align: center;
-    min-width: 78px;  /* Vorher 115px -> viel schmaler! */
-    max-width: 90px;
+    min-width: 95px; /* Etwas breiter für gute Lesbarkeit */
+    max-width: 110px;
     transition: all 0.2s ease;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .cap-card.active {
@@ -84,24 +89,31 @@
     transform: translateY(-2px);
 }
 
+.cap-card-type {
+    font-size: 8px;
+    color: #788a9c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
 .cap-card-boss {
-    font-size: 9px;
-    color: #a0b0c0;
-    margin-bottom: 3px;
+    font-size: 10px;
+    color: #ffffff;
     font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Schneidet überlangen Text sauber mit ... ab */
+    margin-bottom: 4px;
+    line-height: 1.1;
+    word-break: break-word;
 }
 
 .cap-card.active .cap-card-boss {
-    color: #ffffff;
+    color: var(--text-yellow);
 }
 
 .cap-card-lvl {
     font-family: 'Press Start 2P', monospace;
     font-size: 9px;
-    color: #fff;
+    color: #a0b0c0;
 }
 
 .cap-card.active .cap-card-lvl {
@@ -134,11 +146,6 @@
     border-color: var(--silver-main);
 }
 
-.cap-nav-btn:hover {
-    background: #253346;
-    color: #fff;
-    border-color: var(--silver-main);
-}
 				--gold-main: #e6ab08;
 				--gold-dark: #8c6000;
 				--silver-main: #4a8ec2;
@@ -998,26 +1005,32 @@
 			}
 
 			function renderLevelCapsUI() {
-			    const region = appState.capRegion || 'johto';
-			    const caps = LEVEL_CAPS[region];
-			    const container = document.getElementById('capListContainer');
+    const region = appState.capRegion || 'johto';
+    const caps = LEVEL_CAPS[region];
+    const container = document.getElementById('capListContainer');
 
-			    document.getElementById('tab-johto').classList.toggle('active', region === 'johto');
-			    document.getElementById('tab-kanto').classList.toggle('active', region === 'kanto');
+    document.getElementById('tab-johto').classList.toggle('active', region === 'johto');
+    document.getElementById('tab-kanto').classList.toggle('active', region === 'kanto');
 
-			    if (appState.capIndex < 0) appState.capIndex = 0;
-			    if (appState.capIndex >= caps.length) appState.capIndex = caps.length - 1;
+    if (appState.capIndex < 0) appState.capIndex = 0;
+    if (appState.capIndex >= caps.length) appState.capIndex = caps.length - 1;
 
-			    container.innerHTML = caps.map((c, i) => {
-			        const isActive = i === appState.capIndex;
-			        return `
-			            <div class="cap-card${isActive ? ' active' : ''}" onclick="setSpecificCap(${i})">
-			                <div class="cap-card-boss">${c.boss}</div>
-			                <div class="cap-card-lvl">Lv. ${c.lvl}</div>
-			            </div>`;
-			    }).join('');
+    container.innerHTML = caps.map((c, i) => {
+        const isActive = i === appState.capIndex;
+        // Trennt z. B. "1. Orden: Falk" in type="1. Orden" und bossName="Falk"
+        const parts = c.boss.split(': ');
+        const type = parts.length > 1 ? parts[0] : '';
+        const bossName = parts.length > 1 ? parts[1] : c.boss;
 
-			}
+        return `
+            <div class="cap-card${isActive ? ' active' : ''}" onclick="setSpecificCap(${i})">
+                ${type ? `<div class="cap-card-type">${type}</div>` : ''}
+                <div class="cap-card-boss">${bossName}</div>
+                <div class="cap-card-lvl">Lv. ${c.lvl}</div>
+            </div>`;
+    }).join('');
+}
+
 
 			function selectCapRegion(region) {
 			    appState.capRegion = region;
