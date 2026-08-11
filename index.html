@@ -6,146 +6,7 @@
 		<title>Pokemon HeartGold Soul Link Nuzlocke Tracker</title>
 		<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 		<style>
-			:root {/* --- LEVEL CAP SECTION (KOMPAKT) --- */
-/* --- LEVEL CAP SECTION (KOMPAKT) --- */
-/* --- LEVEL CAP SECTION (KOMPAKT & DREIZEILIG) --- */
-.level-cap-section {
-    background: var(--card-bg);
-    border: 3px solid var(--card-border);
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.4);
-    border-radius: 10px;
-    padding: 12px 10px;
-    margin-bottom: 15px;
-}
-
-.cap-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.cap-title {
-    font-family: 'Press Start 2P', monospace;
-    color: var(--text-yellow);
-    font-size: 11px;
-}
-
-.region-tabs {
-    display: flex;
-    gap: 6px;
-}
-
-.region-tab-btn {
-    padding: 5px 10px;
-    background: #141b24;
-    border: 1px solid #3a4b63;
-    border-radius: 4px;
-    color: #8c9ba5;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.region-tab-btn.active {
-    background: linear-gradient(135deg, var(--silver-main), var(--silver-dark));
-    color: #fff;
-    border-color: #82b3dc;
-    box-shadow: 0 0 8px rgba(74, 142, 194, 0.4);
-}
-
-.cap-list {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 6px 2px 10px 2px;
-}
-
-.cap-card {
-    flex: 0 0 auto;
-    background: rgba(10, 15, 22, 0.6);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
-    padding: 6px 4px;
-    text-align: center;
-    min-width: 95px; /* Etwas breiter für gute Lesbarkeit */
-    max-width: 110px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.cap-card.active {
-    border-color: var(--active-cap-green);
-    background: rgba(76, 175, 80, 0.15);
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.6), inset 0 0 6px rgba(76, 175, 80, 0.3);
-    transform: translateY(-2px);
-}
-
-.cap-card-type {
-    font-size: 8px;
-    color: #788a9c;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-}
-
-.cap-card-boss {
-    font-size: 10px;
-    color: #ffffff;
-    font-weight: 600;
-    margin-bottom: 4px;
-    line-height: 1.1;
-    word-break: break-word;
-}
-
-.cap-card.active .cap-card-boss {
-    color: var(--text-yellow);
-}
-
-.cap-card-lvl {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    color: #a0b0c0;
-}
-
-.cap-card.active .cap-card-lvl {
-    color: #81c784;
-    text-shadow: 0 0 6px rgba(76, 175, 80, 0.8);
-}
-
-.cap-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 4px;
-}
-
-.cap-nav-btn {
-    padding: 5px 12px;
-    background: #141b24;
-    border: 1px solid #3a4b63;
-    border-radius: 4px;
-    color: var(--text-light);
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.cap-nav-btn:hover {
-    background: #253346;
-    color: #fff;
-    border-color: var(--silver-main);
-}
-
+			:root {
 				--gold-main: #e6ab08;
 				--gold-dark: #8c6000;
 				--silver-main: #4a8ec2;
@@ -240,13 +101,13 @@
 			.tally-btn:hover { background: linear-gradient(135deg, #637591, #3a475c); }
 			.tally-btn:active { transform: scale(0.9); background: var(--gold-main); color: #000; }
 
-			/* --- LEVEL CAP SECTION (ZENTRIERT) --- */
+			/* --- LEVEL CAP SECTION (KOMPAKT & DREIZEILIG) --- */
 			.level-cap-section {
 			    background: var(--card-bg);
 			    border: 3px solid var(--card-border);
 			    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.4);
 			    border-radius: 10px;
-			    padding: 15px;
+			    padding: 12px 10px;
 			    margin-bottom: 15px;
 			}
 
@@ -254,9 +115,9 @@
 			    display: flex;
 			    justify-content: space-between;
 			    align-items: center;
-			    margin-bottom: 12px;
+			    margin-bottom: 10px;
 			    flex-wrap: wrap;
-			    gap: 10px;
+			    gap: 8px;
 			}
 
 			.cap-title {
@@ -271,13 +132,13 @@
 			}
 
 			.region-tab-btn {
-			    padding: 6px 12px;
+			    padding: 5px 10px;
 			    background: #141b24;
 			    border: 1px solid #3a4b63;
 			    border-radius: 4px;
 			    color: #8c9ba5;
 			    font-family: 'Press Start 2P', monospace;
-			    font-size: 9px;
+			    font-size: 8px;
 			    cursor: pointer;
 			    transition: all 0.2s;
 			}
@@ -292,46 +153,60 @@
 			.cap-list {
 			    display: flex;
 			    justify-content: center;
-			    gap: 8px;
-			    overflow-x: auto;
-			    padding: 8px 4px 12px 4px;
-			    scroll-behavior: smooth;
+			    flex-wrap: wrap;
+			    gap: 6px;
+			    padding: 6px 2px 10px 2px;
 			}
 
 			.cap-card {
 			    flex: 0 0 auto;
 			    background: rgba(10, 15, 22, 0.6);
 			    border: 2px solid rgba(255,255,255,0.1);
-			    border-radius: 8px;
-			    padding: 8px 12px;
+			    border-radius: 6px;
+			    padding: 6px 4px;
 			    text-align: center;
-			    min-width: 115px;
-			    transition: all 0.3s ease;
+			    min-width: 95px;
+			    max-width: 110px;
+			    transition: all 0.2s ease;
 			    cursor: pointer;
+			    display: flex;
+			    flex-direction: column;
+			    align-items: center;
+			    justify-content: center;
 			}
 
 			.cap-card.active {
 			    border-color: var(--active-cap-green);
 			    background: rgba(76, 175, 80, 0.15);
-			    box-shadow: 0 0 12px rgba(76, 175, 80, 0.6), inset 0 0 8px rgba(76, 175, 80, 0.3);
+			    box-shadow: 0 0 10px rgba(76, 175, 80, 0.6), inset 0 0 6px rgba(76, 175, 80, 0.3);
 			    transform: translateY(-2px);
+			}
+
+			.cap-card-type {
+			    font-size: 8px;
+			    color: #788a9c;
+			    text-transform: uppercase;
+			    letter-spacing: 0.5px;
+			    margin-bottom: 2px;
 			}
 
 			.cap-card-boss {
 			    font-size: 10px;
-			    color: #a0b0c0;
-			    margin-bottom: 4px;
+			    color: #ffffff;
 			    font-weight: 600;
+			    margin-bottom: 4px;
+			    line-height: 1.1;
+			    word-break: break-word;
 			}
 
 			.cap-card.active .cap-card-boss {
-			    color: #ffffff;
+			    color: var(--text-yellow);
 			}
 
 			.cap-card-lvl {
 			    font-family: 'Press Start 2P', monospace;
-			    font-size: 11px;
-			    color: #fff;
+			    font-size: 9px;
+			    color: #a0b0c0;
 			}
 
 			.cap-card.active .cap-card-lvl {
@@ -342,18 +217,18 @@
 			.cap-controls {
 			    display: flex;
 			    justify-content: center;
-			    gap: 12px;
-			    margin-top: 6px;
+			    gap: 10px;
+			    margin-top: 4px;
 			}
 
 			.cap-nav-btn {
-			    padding: 6px 14px;
+			    padding: 5px 12px;
 			    background: #141b24;
 			    border: 1px solid #3a4b63;
 			    border-radius: 4px;
 			    color: var(--text-light);
 			    font-family: 'Press Start 2P', monospace;
-			    font-size: 9px;
+			    font-size: 8px;
 			    cursor: pointer;
 			    transition: all 0.2s;
 			}
@@ -524,12 +399,43 @@
 
 			.scroll-hint { text-align: center; color: #5c6e82; font-size: 10px; padding: 8px; font-family: 'Press Start 2P', monospace; }
 
+			/* --- LÖSCH-BUTTON FÜR EIGENE ORTE (DETAIL-TABELLE) --- */
+			.place-cell {
+			    display: flex;
+			    align-items: center;
+			    justify-content: space-between;
+			    gap: 8px;
+			}
+
+			.delete-place-btn {
+			    background: rgba(255, 89, 89, 0.15);
+			    border: 1px solid rgba(255, 89, 89, 0.4);
+			    color: #ff5959;
+			    border-radius: 4px;
+			    width: 22px;
+			    height: 22px;
+			    font-size: 11px;
+			    font-weight: bold;
+			    cursor: pointer;
+			    display: inline-flex;
+			    align-items: center;
+			    justify-content: center;
+			    transition: all 0.2s;
+			    flex-shrink: 0;
+			}
+
+			.delete-place-btn:hover {
+			    background: #ff5959;
+			    color: #fff;
+			    box-shadow: 0 0 6px rgba(255, 89, 89, 0.6);
+			}
+
 			@media (max-width: 768px) {
 			    body { padding: 5px; }
 			    h1 { font-size: 13px; }
 			    .tally-section { gap: 10px; padding: 10px; }
 			    .selected-pokemon img, .pokemon-option img { width: 20px; height: 20px; }
-			    .cap-list { justify-content: flex-start; } /* Mobilgeräten Wischen gewähren */
+			    .cap-list { justify-content: flex-start; }
 			    th:nth-child(1) { width: 30%; }
 			    th:nth-child(2), th:nth-child(3) { width: 25%; }
 			    th:nth-child(4), th:nth-child(5) { width: 10%; }
@@ -1005,32 +911,30 @@
 			}
 
 			function renderLevelCapsUI() {
-    const region = appState.capRegion || 'johto';
-    const caps = LEVEL_CAPS[region];
-    const container = document.getElementById('capListContainer');
+			    const region = appState.capRegion || 'johto';
+			    const caps = LEVEL_CAPS[region];
+			    const container = document.getElementById('capListContainer');
 
-    document.getElementById('tab-johto').classList.toggle('active', region === 'johto');
-    document.getElementById('tab-kanto').classList.toggle('active', region === 'kanto');
+			    document.getElementById('tab-johto').classList.toggle('active', region === 'johto');
+			    document.getElementById('tab-kanto').classList.toggle('active', region === 'kanto');
 
-    if (appState.capIndex < 0) appState.capIndex = 0;
-    if (appState.capIndex >= caps.length) appState.capIndex = caps.length - 1;
+			    if (appState.capIndex < 0) appState.capIndex = 0;
+			    if (appState.capIndex >= caps.length) appState.capIndex = caps.length - 1;
 
-    container.innerHTML = caps.map((c, i) => {
-        const isActive = i === appState.capIndex;
-        // Trennt z. B. "1. Orden: Falk" in type="1. Orden" und bossName="Falk"
-        const parts = c.boss.split(': ');
-        const type = parts.length > 1 ? parts[0] : '';
-        const bossName = parts.length > 1 ? parts[1] : c.boss;
+			    container.innerHTML = caps.map((c, i) => {
+			        const isActive = i === appState.capIndex;
+			        const parts = c.boss.split(': ');
+			        const type = parts.length > 1 ? parts[0] : '';
+			        const bossName = parts.length > 1 ? parts[1] : c.boss;
 
-        return `
-            <div class="cap-card${isActive ? ' active' : ''}" onclick="setSpecificCap(${i})">
-                ${type ? `<div class="cap-card-type">${type}</div>` : ''}
-                <div class="cap-card-boss">${bossName}</div>
-                <div class="cap-card-lvl">Lv. ${c.lvl}</div>
-            </div>`;
-    }).join('');
-}
-
+			        return `
+			            <div class="cap-card${isActive ? ' active' : ''}" onclick="setSpecificCap(${i})">
+			                ${type ? `<div class="cap-card-type">${type}</div>` : ''}
+			                <div class="cap-card-boss">${bossName}</div>
+			                <div class="cap-card-lvl">Lv. ${c.lvl}</div>
+			            </div>`;
+			    }).join('');
+			}
 
 			function selectCapRegion(region) {
 			    appState.capRegion = region;
@@ -1142,10 +1046,36 @@
 			    }).join('');
 			}
 
-			function createTableRowDOM(place, index) {
+			/* --- NEUE LÖSCH-FUNKTION FÜR SELBST ERSTELLTE ORTE --- */
+			function deleteCustomLocation(customIndex, event) {
+			    if (event) event.stopPropagation();
+
+			    const placeName = appState.customLocations[customIndex];
+			    if (!confirm(`Möchtest du den Ort "${placeName}" wirklich aus der Liste entfernen?`)) return;
+
+			    const baseLocationsCount = LOCATIONS.reduce((acc, s) => acc + s.places.length, 0);
+			    const globalIndex = baseLocationsCount + customIndex;
+
+			    appState.customLocations.splice(customIndex, 1);
+			    if (appState.rowsData[globalIndex]) {
+			        appState.rowsData.splice(globalIndex, 1);
+			    }
+
+			    buildTableDOM();
+			    syncFullUIFromState();
+			    saveToFirebase();
+			}
+
+			/* --- ERSTELLUNG DER ZEILEN FÜR DIE DETAIL-TABELLE --- */
+			function createTableRowDOM(place, index, isCustom = false, customIndex = null) {
 			    const tr = document.createElement('tr');
+			    
+			    const deleteBtnHtml = isCustom 
+			        ? `<button class="delete-place-btn" onclick="deleteCustomLocation(${customIndex}, event)" title="Ort löschen">✕</button>` 
+			        : '';
+
 			    tr.innerHTML = `
-			        <td>${place}</td>
+			        <td><div class="place-cell"><span>${place}</span>${deleteBtnHtml}</div></td>
 			        <td>${createPokemonSelectHtml('player1', index)}</td>
 			        <td>${createPokemonSelectHtml('player2', index)}</td>
 			        <td><div class="checkbox-wrapper"><label class="custom-checkbox"><input type="checkbox" onchange="onCheckboxChange(${index}, 'caught')"><span class="checkmark"></span></label></div></td>
@@ -1153,6 +1083,7 @@
 			    return tr;
 			}
 
+			/* --- AUFBAU DER DETAIL-TABELLE --- */
 			function buildTableDOM() {
 			    const tbody = document.getElementById('tableBody');
 			    tbody.innerHTML = '';
@@ -1161,6 +1092,7 @@
 			    ensureStateSize();
 
 			    let index = 0;
+
 			    LOCATIONS.forEach((section) => {
 			        const tr = document.createElement('tr');
 			        tr.className = 'section-header';
@@ -1173,19 +1105,26 @@
 			        tbody.appendChild(catTr);
 
 			        section.places.forEach((place) => {
-			            const rowDOM = createTableRowDOM(place, index);
+			            const rowDOM = createTableRowDOM(place, index, false);
 			            tbody.appendChild(rowDOM);
 			            locationRowsDOM.push(rowDOM);
 			            index++;
 			        });
 			    });
 
-			    appState.customLocations.forEach((place) => {
-			        const rowDOM = createTableRowDOM(place, index);
-			        tbody.appendChild(rowDOM);
-			        locationRowsDOM.push(rowDOM);
-			        index++;
-			    });
+			    if (appState.customLocations.length > 0) {
+			        const customCatTr = document.createElement('tr');
+			        customCatTr.className = 'category-header';
+			        customCatTr.innerHTML = `<td colspan="5">Spezial & Eigene Orte</td>`;
+			        tbody.appendChild(customCatTr);
+
+			        appState.customLocations.forEach((place, customIdx) => {
+			            const rowDOM = createTableRowDOM(place, index, true, customIdx);
+			            tbody.appendChild(rowDOM);
+			            locationRowsDOM.push(rowDOM);
+			            index++;
+			        });
+			    }
 			}
 
 			function syncFullUIFromState() {
@@ -1282,36 +1221,22 @@
 			function openAddModal() { document.getElementById('addModal').classList.add('active'); }
 			function closeAddModal() { document.getElementById('addModal').classList.remove('active'); }
 
+			/* --- ERSTELLEN EINES NEUEN ORTS --- */
 			function saveNewLocation() {
 			    const placeName = document.getElementById('newPlaceName').value.trim();
-			    const categoryName = document.getElementById('newCategory').value.trim() || "Zusatzgebiete";
-			    const regionName = document.getElementById('newRegion').value;
-
 			    if (!placeName) { alert("Bitte einen Namen für den Ort eingeben!"); return; }
 
 			    appState.customLocations.push(placeName);
-			    initFlatPlaces();
 
-			    const tbody = document.getElementById('tableBody');
-			    const index = locationRowsDOM.length;
-
-			    const catTr = document.createElement('tr');
-			    catTr.className = 'category-header';
-			    catTr.innerHTML = `<td colspan="5">${regionName} - ${categoryName}</td>`;
-			    tbody.appendChild(catTr);
-
-			    const tr = createTableRowDOM(placeName, index);
-			    tbody.appendChild(tr);
-			    locationRowsDOM.push(tr);
-
-			    ensureStateSize();
+			    buildTableDOM();
+			    syncFullUIFromState();
 
 			    document.getElementById('newPlaceName').value = '';
 			    closeAddModal();
-			    updateOverview();
 			    saveToFirebase();
 
-			    tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			    const lastRow = locationRowsDOM[locationRowsDOM.length - 1];
+			    if (lastRow) lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
 			}
 
 			function showTable() {
