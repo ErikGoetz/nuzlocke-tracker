@@ -812,7 +812,7 @@
 
 			const pokemonOptionsHtml = POKEMON_DATA.map(p =>
 			    `<div class="pokemon-option" data-id="${p.id}" data-name="${p.name.toLowerCase()}">
-			        <img src="${getSprite(p.id)}" alt="${p.name}" onerror="this.style.display='none'">
+			        <img src="${getSprite(p.id)}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">
 			        <span class="pokemon-name">${p.name}</span>
 			        <span class="pokemon-id">#${String(p.id).padStart(3,'0')}</span>
 			    </div>`
