@@ -165,7 +165,7 @@
 			    border-radius: 6px;
 			    padding: 6px 4px;
 			    text-align: center;
-			    min-width: 95px;
+			    min-width: 100px;
 			    max-width: 110px;
 			    transition: all 0.2s ease;
 			    cursor: pointer;
@@ -926,7 +926,7 @@
 			        const parts = c.boss.split(': ');
 			        const type = parts.length > 1 ? parts[0] : '';
 			        const bossName = parts.length > 1 ? parts[1] : c.boss;
-			        const countText = c.count ? ` (${c.count}er)` : '';
+			        const countText = c.count ? ` (${c.count} PKM)` : '';
 
 			        return `
 			            <div class="cap-card${isActive ? ' active' : ''}" onclick="setSpecificCap(${i})">
