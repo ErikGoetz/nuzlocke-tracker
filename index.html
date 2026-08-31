@@ -808,7 +808,7 @@
 			    { region: "Kanto", category: "Höhlen, Gebäude & Spezialgebiete", places: ["MS Aqua (Schiff)","Digda-Höhle","Vertania-Wald","Mondberg","Kraftwerk","Felsentunnel","Silberberg (Außenbereich)","Silberberg-Höhle (Innenbereich)","Azuria-Höhle"] }
 			];
 
-			const getSprite = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+			const getSprite = id => `https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/${id}.png`;
 
 			const pokemonOptionsHtml = POKEMON_DATA.map(p =>
 			    `<div class="pokemon-option" data-id="${p.id}" data-name="${p.name.toLowerCase()}">
@@ -849,6 +849,9 @@
 			    }
 			}
 
+			// Aktiver Zustand für das globale Dropdown
+			let activeDropdownTarget = null; // { playerId, rowIndex }
+			
 			function createPokemonSelectHtml(playerId, rowIndex) {
 			    return `
 			        <div class="pokemon-select-wrapper">
@@ -856,25 +859,69 @@
 			                <span class="no-pokemon">—</span>
 			            </div>
 			            <input type="text" class="pokemon-search" placeholder="..." data-player="${playerId}" data-row="${rowIndex}"
-			                onfocus="showDropdown('${playerId}',${rowIndex})" oninput="filterPokemon(this)" onclick="event.stopPropagation()">
-			            <div class="pokemon-dropdown" id="dropdown-${playerId}-${rowIndex}">${pokemonOptionsHtml}</div>
+			                onfocus="openGlobalDropdown(this, '${playerId}', ${rowIndex})" oninput="filterGlobalDropdown(this)" onclick="event.stopPropagation()">
 			        </div>`;
 			}
-
-			function showDropdown(playerId, rowIndex) {
-			    document.getElementById(`dropdown-${playerId}-${rowIndex}`).classList.add('active');
+			
+			function openGlobalDropdown(inputElem, playerId, rowIndex) {
+			    activeDropdownTarget = { playerId, rowIndex };
+			    const dropdown = document.getElementById('global-pokemon-dropdown');
+			    
+			    // Dropdown unter das aktuelle Input-Feld hängen
+			    inputElem.parentElement.appendChild(dropdown);
+			    
+			    // Suche zurücksetzen und alle Optionen sichtbar machen
+			    dropdown.querySelectorAll('.pokemon-option').forEach(opt => opt.classList.remove('hidden'));
+			    
+			    dropdown.classList.add('active');
+			    dropdown.scrollTop = 0;
 			}
-
+			
 			function hideAllDropdowns() {
-			    document.querySelectorAll('.pokemon-dropdown').forEach(d => d.classList.remove('active'));
+			    const dropdown = document.getElementById('global-pokemon-dropdown');
+			    if (dropdown) dropdown.classList.remove('active');
+			    activeDropdownTarget = null;
 			}
-
-			function filterPokemon(input) {
-			    const term = input.value.toLowerCase();
-			    input.nextElementSibling.querySelectorAll('.pokemon-option').forEach(opt => {
-			        opt.classList.toggle('hidden', !opt.dataset.name.includes(term));
+			
+			function filterGlobalDropdown(input) {
+			    const term = input.value.toLowerCase().trim();
+			    const dropdown = document.getElementById('global-pokemon-dropdown');
+			    dropdown.querySelectorAll('.pokemon-option').forEach(opt => {
+			        const match = opt.dataset.name.includes(term) || opt.dataset.id.includes(term);
+			        opt.classList.toggle('hidden', !match);
 			    });
 			}
+			
+			document.addEventListener('DOMContentLoaded', () => {
+			    // Einmalig das globale Dropdown im Body erstellen
+			    const globalDropdown = document.createElement('div');
+			    globalDropdown.id = 'global-pokemon-dropdown';
+			    globalDropdown.className = 'pokemon-dropdown';
+			    globalDropdown.innerHTML = pokemonOptionsHtml;
+			    document.body.appendChild(globalDropdown);
+			
+			    buildTableDOM();
+			    listenToFirebase();
+			
+			    document.addEventListener('click', e => {
+			        if (!e.target.closest('.pokemon-select-wrapper')) {
+			            hideAllDropdowns();
+			        }
+			    });
+			
+			    // Klick auf ein Pokémon im Dropdown
+			    globalDropdown.addEventListener('click', e => {
+			        const opt = e.target.closest('.pokemon-option');
+			        if (opt && activeDropdownTarget) {
+			            const pId = parseInt(opt.dataset.id);
+			            const p = POKEMON_DATA.find(item => item.id === pId);
+			            if (p) {
+			                selectPokemon(activeDropdownTarget.playerId, activeDropdownTarget.rowIndex, p.id, p.name);
+			                hideAllDropdowns();
+			            }
+			        }
+			    });
+			});
 
 			function selectPokemon(playerId, rowIndex, pokemonId, pokemonName, skipSave = false) {
 			    ensureStateSize();
